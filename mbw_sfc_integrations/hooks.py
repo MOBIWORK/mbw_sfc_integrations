@@ -227,3 +227,24 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+doc_events = {
+	"Employee": {
+		"on_update": "mbw_sfc_integrations.sfc_integrations.employee.upload_erpnext_employee",
+		"after_delete": "mbw_sfc_integrations.sfc_integrations.employee.deleted_erpnext_employee",
+	},
+    "Department": {
+		"on_update": "mbw_sfc_integrations.sfc_integrations.department.upload_erpnext_department",
+		"after_delete": "mbw_sfc_integrations.sfc_integrations.department.delete_erpnext_department",
+	},
+	"Company": {
+		"on_update": "mbw_sfc_integrations.sfc_integrations.company.upload_erpnext_company",
+        "after_delete": "mbw_sfc_integrations.sfc_integrations.company.delete_erpnext_company",
+	},
+}
+
+fixtures = [
+    {
+        "doctype": "Custom Field",
+        "filters": [["module", "in", ("Sfc Integrations")]]
+    },
+]
