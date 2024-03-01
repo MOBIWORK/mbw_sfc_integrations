@@ -29,7 +29,7 @@ def create_attendance_from_payload(payload):
         if key in fields:
            attendance.set(key, value)
     attendance.status = validate_choice(STATUS_ATTENDANCE)(payload.get("status", "Present"))
-    attendance.attendance_date = validate_date(payload.get("attendance_date"))
+    attendance.attendance_date = validate_date(payload.get("attendance_date")/1000)
 
     return attendance
 
