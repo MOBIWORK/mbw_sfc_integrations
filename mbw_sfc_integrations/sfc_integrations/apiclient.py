@@ -93,7 +93,6 @@ class FWAPIClient:
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
-
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict)
 	def update_department(self, department_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
@@ -101,7 +100,6 @@ class FWAPIClient:
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
-
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict,method="PUT")
 	def delete_department(self, department_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
@@ -113,30 +111,29 @@ class FWAPIClient:
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict,method="DELETE")
 	#COMPANY
-	def create_company(self, department_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
+	def create_company(self, company_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
+		"""Create/update item on unicommerce.
+
+		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
+		"""
+		endpoint = "/company"
+		return self.request(endpoint=endpoint, body=company_dict)
+	def update_company(self, company_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
 
 		endpoint = "/company"
-		return self.request(endpoint=endpoint, body=department_dict)
-	def update_company(self, department_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
+		return self.request(endpoint=endpoint, body=company_dict,method="PUT")
+	def delete_company(self, company_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
 
 		endpoint = "/company"
-		return self.request(endpoint=endpoint, body=department_dict,method="PUT")
-	def delete_company(self, department_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
-		"""Create/update item on unicommerce.
-
-		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
-		"""
-
-		endpoint = "/company"
-		return self.request(endpoint=endpoint, body=department_dict,method="DELETE")
+		return self.request(endpoint=endpoint, body=company_dict,method="DELETE")
 	#employee 
 	def create_employee(self, employee_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.

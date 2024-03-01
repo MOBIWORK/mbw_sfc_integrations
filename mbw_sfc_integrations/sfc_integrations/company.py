@@ -7,7 +7,7 @@ from frappe.utils.nestedset import get_root_of
 import json
 from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
 from mbw_sfc_integrations.sfc_integrations.apiclient import FWAPIClient
-from datetime import datetime
+import datetime
 
 def upload_erpnext_company(doc, method=None):
 
@@ -16,8 +16,12 @@ def upload_erpnext_company(doc, method=None):
     company= doc.as_dict()
     new_company = {}
     for key,value in company.items():
-         if not isinstance(value, datetime):
-              new_company[key] = value
+        if not isinstance(value, (datetime.date, datetime.datetime)):
+            new_company[key] = value
+        elif isinstance(value, datetime.date):
+            new_company[key] = datetime.datetime(value.year, value.month, value.day).timestamp()
+        elif isinstance(value, datetime.datetime):
+            new_company[key] = value.timestamp()
     client = FWAPIClient()
     try:
         if doc.is_new() == False:

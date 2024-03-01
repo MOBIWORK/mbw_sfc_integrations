@@ -7,7 +7,7 @@ from frappe.utils.nestedset import get_root_of
 
 from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
 from mbw_sfc_integrations.sfc_integrations.apiclient import FWAPIClient
-from datetime import datetime
+import datetime
 
 #after create
 def upload_erpnext_department(doc, method=None):
@@ -16,8 +16,12 @@ def upload_erpnext_department(doc, method=None):
     department= doc.as_dict()
     new_department = {}
     for key,value in department.items():
-         if not isinstance(value, datetime):
-              new_department[key] = value
+        if not isinstance(value, (datetime.date, datetime.datetime)):
+            new_department[key] = value
+        elif isinstance(value, datetime.date):
+            new_department[key] = datetime.datetime(value.year, value.month, value.day).timestamp()
+        elif isinstance(value, datetime.datetime):
+            new_department[key] = value.timestamp()
     if doc.is_new() == False:
         action="Created"
     else:
@@ -28,11 +32,11 @@ def upload_erpnext_department(doc, method=None):
     
     try:
         if doc.is_new() == False:
-            client.create_department(department)
+            client.create_department(new_department)
             action="Created"
         else:
             action="Updated"
-            client.update_department(department)
+            client.update_department(new_department)
         write_upload_log(status=True, fwdepartment=new_department.get("name"), department=new_department,action=action)
     except Exception as e:
         write_upload_log(status=False, fwdepartment=new_department.get("name"), department=new_department,action=action)
