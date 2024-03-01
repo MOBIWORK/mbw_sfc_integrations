@@ -7,6 +7,7 @@ from frappe.utils.nestedset import get_root_of
 import json
 from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
 from mbw_sfc_integrations.sfc_integrations.apiclient import FWAPIClient
+from mbw_sfc_integrations.sfc_integrations.constants import UPLOAD_ERPNEXT_COMPANY, DELETED_ERPNEXT_COMPANY
 import datetime
 
 def upload_erpnext_company(doc, method=None):
@@ -44,11 +45,11 @@ def delete_erpnext_company(doc, method=None):
         client.delete_company({
              "name": company.name
 		})
-        write_upload_log(status=True, fwcompany=company.name, company=company,action="Deleted",method="mbw_sfc_integrations.sfc_integrations.company.delete_erpnext_company")
+        write_upload_log(status=True, fwcompany=company.name, company=company,action="Deleted",method=DELETED_ERPNEXT_COMPANY)
     except Exception as e:
-        write_upload_log(status=False, fwcompany=e, company=company,action="Deleted",method="mbw_sfc_integrations.sfc_integrations.company.delete_erpnext_company")        
+        write_upload_log(status=False, fwcompany=e, company=company,action="Deleted",method=DELETED_ERPNEXT_COMPANY)        
 		
-def write_upload_log(status: bool, fwcompany, company, action="Created",method="mbw_sfc_integrations.sfc_integrations.company.upload_erpnext_company") -> None:
+def write_upload_log(status: bool, fwcompany, company, action="Created",method=UPLOAD_ERPNEXT_COMPANY) -> None:
 	if not status:
 		msg = f"Failed to {action} company to sfc" + "<br>"
 		msg += _("sfc reported errors:") + " " + ", ".join(fwcompany.errors.full_messages())
@@ -64,6 +65,6 @@ def write_upload_log(status: bool, fwcompany, company, action="Created",method="
 		create_sfc_log(
 			status="Success",
 			request_data= company,
-			message=f"{action} company: {company.get('name')}, sfc user: {company.get('name')}",
+			message=f"{action} company: {company.get('name')}",
 			method=method,
 		)

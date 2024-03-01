@@ -87,7 +87,8 @@ class FWAPIClient:
 			)
 
 		return data, status
-	#DEPARTMENT
+	
+	# Department
 	def create_department(self, department_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
@@ -95,6 +96,7 @@ class FWAPIClient:
 		"""
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict)
+	
 	def update_department(self, department_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
@@ -102,6 +104,7 @@ class FWAPIClient:
 		"""
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict,method="PUT")
+	
 	def delete_department(self, department_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
@@ -110,7 +113,8 @@ class FWAPIClient:
 
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict,method="DELETE")
-	#COMPANY
+	
+	# Company
 	def create_company(self, company_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
@@ -118,6 +122,7 @@ class FWAPIClient:
 		"""
 		endpoint = "/company"
 		return self.request(endpoint=endpoint, body=company_dict)
+	
 	def update_company(self, company_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
@@ -126,6 +131,7 @@ class FWAPIClient:
 
 		endpoint = "/company"
 		return self.request(endpoint=endpoint, body=company_dict,method="PUT")
+	
 	def delete_company(self, company_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
@@ -134,7 +140,8 @@ class FWAPIClient:
 
 		endpoint = "/company"
 		return self.request(endpoint=endpoint, body=company_dict,method="DELETE")
-	#employee 
+	
+	# Employee 
 	def create_employee(self, employee_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
@@ -143,6 +150,7 @@ class FWAPIClient:
 
 		endpoint = "/employee"
 		return self.request(endpoint=endpoint, body=employee_dict)
+	
 	def update_employee(self, employee_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 
@@ -150,6 +158,7 @@ class FWAPIClient:
 		"""
 		endpoint = "/employee"
 		return self.request(endpoint=endpoint, body=employee_dict,method="PUT")
+	
 	def delete_employee(self, employee_dict: JsonDict, update=False) -> Tuple[JsonDict, bool]:
 		"""Create/update item on unicommerce.
 

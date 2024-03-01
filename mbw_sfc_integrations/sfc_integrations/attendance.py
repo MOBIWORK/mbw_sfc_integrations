@@ -3,7 +3,7 @@ from frappe import _
 from frappe.utils import get_time
 from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
 from mbw_sfc_integrations.sfc_integrations.validators import validate_date, validate_choice
-from mbw_sfc_integrations.sfc_integrations import configs
+from mbw_sfc_integrations.sfc_integrations.constants import STATUS_ATTENDANCE
 
 def create_attendance(payload, request_id=None):
 	try:
@@ -24,7 +24,7 @@ def create_attendance_from_payload(payload):
     attendance = frappe.new_doc("Attendance")
 
     attendance.employee = payload.get("employee")
-    attendance.status = validate_choice(configs.status_attendance)(payload.get("status", "Present"))
+    attendance.status = validate_choice(STATUS_ATTENDANCE)(payload.get("status", "Present"))
     attendance.attendance_date = validate_date(payload.get("attendance_date"))
     attendance.company = payload.get("company")
 

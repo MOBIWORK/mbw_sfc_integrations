@@ -18,3 +18,30 @@ EVENT_MAPPER = {
     "worksite_delete": "mbw_sfc_integrations.sfc_integrations.worksite.delete_worksite",
 }
 
+
+STATUS_ATTENDANCE= {
+    'Present': 'Present',
+    'Absent': 'Absent',
+    'On Leave': 'On Leave',
+    'Half Day': 'Half Day',
+    'Work From Home': 'Work From Home',
+}
+
+STATUS_WORKSITE = {
+    'Active': 'Active',
+    'Lock': 'Lock'
+}
+
+LIMIT_WORKSITE = {
+    'All employee': 'All employee',
+    'Setting Employee': 'Setting Employee'
+}
+
+UPLOAD_ERPNEXT_EMPLOYEE = "mbw_sfc_integrations.sfc_integrations.employee.upload_erpnext_employee"
+DELETED_ERPNEXT_EMPLOYEE = "mbw_sfc_integrations.sfc_integrations.employee.deleted_erpnext_employee"
+
+UPLOAD_ERPNEXT_DEPARTMENT = "mbw_sfc_integrations.sfc_integrations.department.upload_erpnext_department"
+DELETED_ERPNEXT_DEPARTMENT = "mbw_sfc_integrations.sfc_integrations.department.delete_erpnext_department"
+
+UPLOAD_ERPNEXT_COMPANY = "mbw_sfc_integrations.sfc_integrations.company.upload_erpnext_company"
+DELETED_ERPNEXT_COMPANY = "mbw_sfc_integrations.sfc_integrations.company.delete_erpnext_company"

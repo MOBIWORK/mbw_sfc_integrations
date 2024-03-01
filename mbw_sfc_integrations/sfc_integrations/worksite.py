@@ -2,7 +2,7 @@ import frappe
 from frappe import _
 from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
 from mbw_sfc_integrations.sfc_integrations.validators import validate_not_none, validate_choice
-from mbw_sfc_integrations.sfc_integrations import configs
+from mbw_sfc_integrations.sfc_integrations.constants import STATUS_WORKSITE, LIMIT_WORKSITE 
 
 def create_worksite(payload, request_id=None):
 	try:
@@ -24,8 +24,8 @@ def create_worksite_from_payload(payload):
 
     worksite.name_address = validate_not_none(payload.get('name_address'))
     worksite.address = validate_not_none(payload.get('address'))
-    worksite.status = validate_choice(configs.status_worksite)(payload.get('status', 'Active'))
-    worksite.is_limited = validate_choice(configs.limit_worksite)(payload.get('is_limited', 'Setting Employee'))
+    worksite.status = validate_choice(STATUS_WORKSITE)(payload.get('status', 'Active'))
+    worksite.is_limited = validate_choice(LIMIT_WORKSITE)(payload.get('is_limited', 'Setting Employee'))
     worksite.radius = payload.get('radius')
     worksite.map = payload.get('map')
     employees = payload.get('employees')

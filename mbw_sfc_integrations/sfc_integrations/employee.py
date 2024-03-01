@@ -7,6 +7,7 @@ from frappe.utils.nestedset import get_root_of
 from mbw_sfc_integrations.sfc_integrations.apiclient import FWAPIClient
 
 from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
+from mbw_sfc_integrations.sfc_integrations.constants import UPLOAD_ERPNEXT_EMPLOYEE, DELETED_ERPNEXT_EMPLOYEE
 import datetime
 
 def upload_erpnext_employee(doc, method=None):
@@ -31,39 +32,37 @@ def upload_erpnext_employee(doc, method=None):
         else:
             action="Updated"
             client.update_employee(new_employee)
-        write_upload_log(status=True,user= employee.get("user_id") if employee.get("user_id") else None, employee=new_employee,action=action)
+        write_upload_log(status=True,user= new_employee.get("user_id") if new_employee.get("user_id") else None, employee=new_employee,action=action)
     except Exception as e:
-        write_upload_log(status=False,user= employee.get("user_id") if employee.get("user_id") else None, employee=new_employee,action=action)
-
-
-
+        write_upload_log(status=False,user= new_employee.get("user_id") if new_employee.get("user_id") else None, employee=new_employee,action=action)
 
 
 def deleted_erpnext_employee(doc, method=None):
 
     """This hook is called when delete `Employee`.
     """
-    employee = doc
+    employee = doc.as_dict()
     client = FWAPIClient()    
     try:
         client.delete_employee({
             "name" : employee.name
         })
-        write_upload_log(status=True,user= employee.user_id if employee.user_id else None, employee=employee,action="Deleted",method="mbw_sfc_integrations.sfc_integrations.employee.deleted_erpnext_employee")
+        write_upload_log(status=True,user= employee.user_id if employee.user_id else None, employee=employee,action="Deleted",method=DELETED_ERPNEXT_EMPLOYEE)
     except Exception as e:
-        write_upload_log(status=False,user= employee.user_id if employee.user_id else None, employee=employee,action="Deleted",method="mbw_sfc_integrations.sfc_integrations.employee.deleted_erpnext_employee")
+        write_upload_log(status=False,user= employee.user_id if employee.user_id else None, employee=employee,action="Deleted",method=DELETED_ERPNEXT_EMPLOYEE)
 
-def write_upload_log(status: bool, user: None, employee, action="Created",method="mbw_sfc_integrations.sfc_integrations.employee.upload_erpnext_employee") -> None:
-    print("")
+def write_upload_log(status: bool, user: None, employee, action="Created",method=UPLOAD_ERPNEXT_EMPLOYEE) -> None:
     if not status:
         msg = _("Failed to upload employee to sfc") + "<br>"
-        #     msg += _("sfc reported errors:") + " " + ", ".join(user.errors.full_messages())
+        # msg += _("sfc reported errors:") + " " + ", ".join(user.errors.full_messages())
         msgprint(msg, title="Note", indicator="orange")
 
         create_sfc_log(
-            status="Error",  request_data=employee if employee else None, message=msg, method=method,
+            status="Error",  
+            request_data=employee if employee else None, 
+            message=msg, 
+            method=method,
         )
-
     else:
         create_sfc_log(
             status="Success",
