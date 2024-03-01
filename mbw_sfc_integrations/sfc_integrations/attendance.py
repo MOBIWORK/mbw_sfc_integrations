@@ -13,6 +13,7 @@ def create_attendance(payload, request_id=None):
 
 		attendance = create_attendance_from_payload(payload)
 		attendance.insert()
+		attendance.submit()
 
 	except Exception as e:
 		create_sfc_log(status="Error", exception=e, rollback=True)
@@ -23,10 +24,12 @@ def create_attendance_from_payload(payload):
     # Xử lý dữ liệu từ payload và tạo Attendance mới
     attendance = frappe.new_doc("Attendance")
 
-    attendance.employee = payload.get("employee")
+    fields = ["employee", "company", "shift", "working_hours", "late_entry", "early_exit", "late_check_in", "early_check_out", "custom_number_of_late_days", "custom_late_working_hours"]
+    for key, value in payload.items():
+        if key in fields:
+           attendance.set(key, value)
     attendance.status = validate_choice(STATUS_ATTENDANCE)(payload.get("status", "Present"))
     attendance.attendance_date = validate_date(payload.get("attendance_date"))
-    attendance.company = payload.get("company")
 
     return attendance
 
