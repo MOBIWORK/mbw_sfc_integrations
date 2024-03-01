@@ -41,7 +41,7 @@ def get_callback_url() -> str:
 @frappe.whitelist(allow_guest=True)
 def store_request_data() -> None:
 	if frappe.request:
-		hmac_header = frappe.get_request_header("X-SFC-JTW")
+		hmac_header = frappe.get_request_header("X-SFC-JWT")
 
 		_validate_request(frappe.request, hmac_header)
 

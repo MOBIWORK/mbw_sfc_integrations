@@ -26,8 +26,9 @@ class FWAPIClient:
 		self, url: Optional[str] = None, access_token: Optional[str] = None,
 	):
 		self.settings = frappe.get_doc(SETTING_DOCTYPE)
-		self.base_url = url or f"https://65d4044a522627d50109c0b1.mockapi.io/api/v1"
-		self.access_token = access_token
+		self.base_url = self.settings.sfc_site or f"http://10.0.1.127:8670/v1"
+		self.access_token = self.settings.jwttoken
+		self.orgid = self.settings.orgid
 		self.__initialize_auth()
 
 	def __initialize_auth(self):
@@ -37,6 +38,7 @@ class FWAPIClient:
 		#	self.access_token = self.settings.get_password("access_token")
 
 		#self._auth_headers = {"Authorization": f"Bearer {self.access_token}"}
+		self._auth_headers = {"X-SFC-JWT": self.access_token, "X-SFC-ORGID":self.orgid}
 
 	def request(
 		self,
@@ -52,7 +54,7 @@ class FWAPIClient:
 		if headers is None:
 			headers = {}
 
-		#headers.update(self._auth_headers)
+		headers.update(self._auth_headers)
 
 		url = self.base_url + endpoint
 
