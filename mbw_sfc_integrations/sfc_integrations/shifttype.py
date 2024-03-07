@@ -26,6 +26,7 @@ def create_shift_type_from_payload(payload):
     shift_type.name = validate_not_none(payload.get("name"))
     shift_type.start_time = validate_not_none(get_time(payload.get("start_time")))
     shift_type.end_time = validate_not_none(get_time(payload.get("end_time")))
+    shift_type.sfc_key = validate_not_none(payload.get("sfc_key"))
 
     return shift_type
 
@@ -35,10 +36,11 @@ def update_shift_type(payload, request_id=None):
 		frappe.set_user("Administrator")
 		frappe.flags.request_id = request_id
 
-        # Lấy Shift Type cần cập nhật từ cơ sở dữ liệu
-		shift_type_name = payload.get("name")
-		if frappe.db.exists("Shift Type", shift_type_name, cache=True):
-			shift_type = frappe.get_doc("Shift Type", shift_type_name)
+        # Lấy sfc_key Shift Type cần cập nhật từ cơ sở dữ liệu
+		sfc_key = validate_not_none(payload.get('sfc_key'))
+
+		if frappe.db.exists("Shift Type", {"sfc_key": sfc_key}):
+			shift_type = frappe.get_doc("Shift Type", {"sfc_key":sfc_key})
 
 			# Cập nhật các trường dữ liệu mới từ payload
 			for field, value in dict(payload).items():
@@ -58,12 +60,12 @@ def delete_shift_type(payload, request_id=None):
 		frappe.set_user("Administrator")
 		frappe.flags.request_id = request_id
 
-		# Lấy tên Shift Type cần xóa từ payload
-		shift_type_name = payload.get("name")
-
+		# Lấy sfc_key Shift Type cần xóa từ payload
+		sfc_key = validate_not_none(payload.get('sfc_key'))
+		
 		#  Kiểm tra shift type có tồn tại hay không
-		if frappe.db.exists("Shift Type", shift_type_name, cache=True):
-			frappe.delete_doc('Shift Type', shift_type_name)
+		if frappe.db.exists("Shift Type", {"sfc_key":sfc_key}):
+			frappe.delete_doc('Shift Type', {"sfc_key":sfc_key})
 		else:
 			frappe.throw(("Shift type không tồn tại!"))
 

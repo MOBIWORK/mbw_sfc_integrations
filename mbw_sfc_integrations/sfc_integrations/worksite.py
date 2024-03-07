@@ -28,6 +28,7 @@ def create_worksite_from_payload(payload):
     worksite.is_limited = validate_choice(LIMIT_WORKSITE)(payload.get('is_limited', 'Setting Employee'))
     worksite.radius = payload.get('radius')
     worksite.map = payload.get('map')
+    worksite.sfc_key = validate_not_none(payload.get('sfc_key'))
     employees = payload.get('employees')
     if employees:
         for em_data in employees:
@@ -61,13 +62,11 @@ def update_worksite(payload, request_id=None):
         frappe.flags.request_id = request_id
 
         # Lấy tên Worksites từ payload
-        worksite_name = validate_not_none(payload.get("name"))
+        sfc_key = validate_not_none(payload.get("sfc_key"))
 
         # Kiểm tra nếu Worksites tồn tại
-        if frappe.db.exists("sfc Worksite", worksite_name, cache=True):
-            # Lấy Worksites từ cơ sở dữ liệu
-            worksite = frappe.get_doc("sfc Worksite", worksite_name)
-
+        if frappe.db.exists("SFC Worksite", {"sfc_key":sfc_key}):
+            worksite = frappe.get_doc("SFC Worksite", {"sfc_key":sfc_key})
             # Cập nhật các trường dữ liệu mới từ payload
             for field in ['name_address', 'address', 'status', 'radius', 'map', 'is_limited']:
                 value = payload.get(field)
@@ -151,11 +150,12 @@ def delete_worksite(payload, request_id=None):
 		frappe.flags.request_id = request_id
 
 		# Lấy tên Worksite cần xóa từ payload
-		worksite_name = validate_not_none(payload.get("name"))
+		sfc_key = validate_not_none(payload.get("sfc_key"))
+          
+		# Kiểm tra Worksite có tồn tại hay không
 
-		#  Kiểm tra Worksite có tồn tại hay không
-		if frappe.db.exists("sfc Worksite", worksite_name, cache=True):
-			frappe.delete_doc('sfc Worksite', worksite_name)
+		if frappe.db.exists("SFC Worksite", {"sfc_key":sfc_key}):
+			frappe.db.delete("SFC Worksite", {'sfc_key': sfc_key})
 		else:
 			frappe.throw(("Worksite không tồn tại!"))
 

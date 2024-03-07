@@ -241,10 +241,3 @@ doc_events = {
         "after_delete": "mbw_sfc_integrations.sfc_integrations.company.delete_erpnext_company",
 	},
 }
-
-fixtures = [
-    {
-        "doctype": "Custom Field",
-        "filters": [["module", "in", ("Sfc Integrations")]]
-    },
-]

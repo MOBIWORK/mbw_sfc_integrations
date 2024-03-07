@@ -5,7 +5,7 @@ from frappe import _, msgprint
 from frappe.utils import cint, cstr
 from frappe.utils.nestedset import get_root_of
 import json
-from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
+from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log, create_sfc_key
 from mbw_sfc_integrations.sfc_integrations.apiclient import FWAPIClient
 from mbw_sfc_integrations.sfc_integrations.constants import UPLOAD_ERPNEXT_COMPANY, DELETED_ERPNEXT_COMPANY
 import datetime
@@ -27,6 +27,7 @@ def upload_erpnext_company(doc, method=None):
     try:
         if doc.is_new() == False:
             action="Created"
+            new_company['sfc_key'] = create_sfc_key()   
             client.create_company(new_company)
         else:
             client.update_company(new_company)
@@ -52,7 +53,7 @@ def delete_erpnext_company(doc, method=None):
 def write_upload_log(status: bool, fwcompany, company, action="Created",method=UPLOAD_ERPNEXT_COMPANY) -> None:
 	if not status:
 		msg = f"Failed to {action} company to sfc" + "<br>"
-		msg += _("sfc reported errors:") + " " + ", ".join(fwcompany.errors.full_messages())
+		# msg += _("sfc reported errors:") + " " + ", ".join(fwcompany.errors.full_messages())
 		msgprint(msg, title="Note", indicator="orange")
 
 		create_sfc_log(

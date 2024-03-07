@@ -6,7 +6,7 @@ from frappe.utils import cint, cstr
 from frappe.utils.nestedset import get_root_of
 from mbw_sfc_integrations.sfc_integrations.apiclient import FWAPIClient
 
-from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
+from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log, create_sfc_key
 from mbw_sfc_integrations.sfc_integrations.constants import UPLOAD_ERPNEXT_EMPLOYEE, DELETED_ERPNEXT_EMPLOYEE
 import datetime
 
@@ -28,6 +28,7 @@ def upload_erpnext_employee(doc, method=None):
     try:
         if doc.is_new() == False:
             action="Created"
+            new_employee['sfc_key'] = create_sfc_key()
             client.create_employee(new_employee)
         else:
             action="Updated"

@@ -26,7 +26,7 @@ class FWAPIClient:
 		self, url: Optional[str] = None, access_token: Optional[str] = None,
 	):
 		self.settings = frappe.get_doc(SETTING_DOCTYPE)
-		self.base_url = self.settings.sfc_site or f"http://10.0.1.127:8670/v1"
+		self.base_url = self.settings.sfc_site or f"https://65d4044a522627d50109c0b1.mockapi.io/api/v1"
 		self.access_token = self.settings.jwttoken
 		self.orgid = self.settings.orgid
 		self.__initialize_auth()
@@ -50,6 +50,7 @@ class FWAPIClient:
 		files: Optional[JsonDict] = None,
 		log_error=True,
 	) -> Tuple[JsonDict, bool]:
+	
 
 		if headers is None:
 			headers = {}

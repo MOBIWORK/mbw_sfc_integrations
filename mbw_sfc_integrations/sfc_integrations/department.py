@@ -5,7 +5,7 @@ from frappe import _, msgprint
 from frappe.utils import cint, cstr
 from frappe.utils.nestedset import get_root_of
 
-from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
+from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log, create_sfc_key
 from mbw_sfc_integrations.sfc_integrations.apiclient import FWAPIClient
 from mbw_sfc_integrations.sfc_integrations.constants import UPLOAD_ERPNEXT_DEPARTMENT, DELETED_ERPNEXT_DEPARTMENT
 import datetime
@@ -25,6 +25,7 @@ def upload_erpnext_department(doc, method=None):
             new_department[key] = value.timestamp()
     if doc.is_new() == False:
         action="Created"
+        new_department['sfc_key'] = create_sfc_key()
     else:
         action="Updated"
     client = FWAPIClient()

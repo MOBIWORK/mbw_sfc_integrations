@@ -2,7 +2,7 @@ import frappe
 from frappe import _
 from frappe.utils import get_time
 from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
-from mbw_sfc_integrations.sfc_integrations.validators import validate_date, validate_choice
+from mbw_sfc_integrations.sfc_integrations.validators import validate_date, validate_choice, validate_not_none
 from mbw_sfc_integrations.sfc_integrations.constants import STATUS_ATTENDANCE
 
 def create_attendance(payload, request_id=None):
@@ -30,6 +30,7 @@ def create_attendance_from_payload(payload):
            attendance.set(key, value)
     attendance.status = validate_choice(STATUS_ATTENDANCE)(payload.get("status", "Present"))
     attendance.attendance_date = validate_date(payload.get("attendance_date")/1000)
+    attendance.sfc_key = validate_not_none(payload.get('sfc_key'))
 
     return attendance
 
@@ -40,9 +41,9 @@ def update_attendance(payload, request_id=None):
 		frappe.flags.request_id = request_id
 
         # Lấy Attendance cần cập nhật từ cơ sở dữ liệu
-		attendance_name = payload.get("name")
-		if frappe.db.exists("Attendance", attendance_name, cache=True):
-			attendance_name = frappe.get_doc("Attendance", attendance_name)
+		sfc_key = validate_not_none(payload.get('sfc_key'))
+		if frappe.db.exists("Attendance", {"sfc_key":sfc_key}):
+			attendance_name = frappe.get_doc("Attendance", {"sfc_key":sfc_key})
 
 			# Cập nhật các trường dữ liệu mới từ payload
 			for field, value in dict(payload).items():
