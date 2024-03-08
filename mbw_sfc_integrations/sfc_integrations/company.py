@@ -16,6 +16,7 @@ def upload_erpnext_company(doc, method=None):
     """
     company= doc.as_dict()
     new_company = {}
+    action = "Updated"
     for key,value in company.items():
         if not isinstance(value, (datetime.date, datetime.datetime)):
             new_company[key] = value
@@ -27,7 +28,7 @@ def upload_erpnext_company(doc, method=None):
     try:
         if doc.is_new() == None:
             client.update_company(new_company)
-            action="Updated"
+            action=action
             write_upload_log(status=True, fwcompany=new_company.get("name"), company=new_company,action=action,method=UPLOAD_ERPNEXT_COMPANY)
     except Exception as e:
         write_upload_log(status=False, fwcompany=new_company.get("name"), company=new_company,action=action,method=UPLOAD_ERPNEXT_COMPANY)       
