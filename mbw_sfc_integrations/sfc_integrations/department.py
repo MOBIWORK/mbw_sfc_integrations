@@ -29,7 +29,10 @@ def upload_erpnext_department(doc, method=None):
     new_department["company_code"] = company.get("company_code")
     
     try:
-        if doc.is_new() == None:
+        if doc.is_new() == False:
+            action="Created"
+            client.create_department(new_department)
+        else:
             action=action
             client.update_department(new_department)
         write_upload_log(status=True, fwdepartment=new_department.get("name"), department=new_department,action=action, method=UPLOAD_ERPNEXT_DEPARTMENT)
@@ -37,31 +40,7 @@ def upload_erpnext_department(doc, method=None):
         write_upload_log(status=False, fwdepartment=new_department.get("name"), department=new_department,action=action, method=UPLOAD_ERPNEXT_DEPARTMENT)
 
 def insert_erpnext_department(doc, method=None):
-    """This hook is called when inserting new `Department`.
-    """
-    department= doc.as_dict()
-    new_department = {}
-    for key,value in department.items():
-        if not isinstance(value, (datetime.date, datetime.datetime)):
-            new_department[key] = value
-        elif isinstance(value, datetime.date):
-            new_department[key] = datetime.datetime(value.year, value.month, value.day).timestamp()
-        elif isinstance(value, datetime.datetime):
-            new_department[key] = value.timestamp()
-    client = FWAPIClient()
-    company = frappe.db.get_value("Company",department.company,["company_name","company_code"], as_dict=1)
-    new_department["company_code"] = company.get("company_code")
-
-    try:
-        new_sfc_key = create_sfc_key()
-        new_department['sfc_key'] = new_sfc_key
-        doc.sfc_key = new_sfc_key
-        action="Created"
-        client.create_department(new_department)
-        
-        write_upload_log(status=True, fwdepartment=new_department.get("name"), department=new_department,action=action)
-    except Exception as e:
-        write_upload_log(status=False, fwdepartment=new_department.get("name"), department=new_department,action=action)
+    doc.sfc_key = create_sfc_key()
 
 #after delete
 def delete_erpnext_department(doc, method=None):

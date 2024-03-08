@@ -26,7 +26,10 @@ def upload_erpnext_employee(doc, method=None):
         elif isinstance(value, datetime.datetime):
             new_employee[key] = value.timestamp()
     try:
-        if doc.is_new() == None:
+        if doc.is_new() == False:
+            action="Created"
+            client.create_employee(new_employee)
+        else:
             action=action
             client.update_employee(new_employee)
         write_upload_log(status=True,user= new_employee.get("user_id") if new_employee.get("user_id") else None, employee=new_employee,action=action, method=UPLOAD_ERPNEXT_EMPLOYEE)
@@ -34,28 +37,7 @@ def upload_erpnext_employee(doc, method=None):
         write_upload_log(status=False,user= new_employee.get("user_id") if new_employee.get("user_id") else None, employee=new_employee,action=action, method=UPLOAD_ERPNEXT_EMPLOYEE)
 
 def insert_erpnext_employee(doc, method=None):
-
-    """This hook is called when inserting new `Employee`.
-    """
-    client = FWAPIClient()
-    employee= doc.as_dict()
-    new_employee = {}
-    for key, value in employee.items():
-        if not isinstance(value, (datetime.date, datetime.datetime)):
-            new_employee[key] = value
-        elif isinstance(value, datetime.date):
-            new_employee[key] = datetime.datetime(value.year, value.month, value.day).timestamp()
-        elif isinstance(value, datetime.datetime):
-            new_employee[key] = value.timestamp()
-    try:
-        new_sfc_key = create_sfc_key()
-        new_employee['sfc_key'] = new_sfc_key
-        doc.sfc_key = new_sfc_key
-        action="Created"
-        client.create_employee(new_employee)
-        write_upload_log(status=True,user= new_employee.get("user_id") if new_employee.get("user_id") else None, employee=new_employee,action=action)
-    except Exception as e:
-        write_upload_log(status=False,user= new_employee.get("user_id") if new_employee.get("user_id") else None, employee=new_employee,action=action)
+        doc.sfc_key = create_sfc_key()
 
 
 def deleted_erpnext_employee(doc, method=None):

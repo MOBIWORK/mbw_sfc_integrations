@@ -16,7 +16,6 @@ def upload_erpnext_company(doc, method=None):
     """
     company= doc.as_dict()
     new_company = {}
-    action = "Updated"
     for key,value in company.items():
         if not isinstance(value, (datetime.date, datetime.datetime)):
             new_company[key] = value
@@ -26,38 +25,19 @@ def upload_erpnext_company(doc, method=None):
             new_company[key] = value.timestamp()
     client = FWAPIClient()
     try:
-        if doc.is_new() == None:
+        if doc.is_new() == False:
+            action="Created"
+            client.create_company(new_company)
+        else:
             client.update_company(new_company)
-            action=action
+            action="Updated"
             write_upload_log(status=True, fwcompany=new_company.get("name"), company=new_company,action=action,method=UPLOAD_ERPNEXT_COMPANY)
     except Exception as e:
         write_upload_log(status=False, fwcompany=new_company.get("name"), company=new_company,action=action,method=UPLOAD_ERPNEXT_COMPANY)       
 
 def insert_erpnext_company(doc, method=None):
-
-    """This hook is called when inserting new or `company`.
-    """
-    company= doc.as_dict()
-    
-    new_company = {}
-    for key,value in company.items():
-        if not isinstance(value, (datetime.date, datetime.datetime)):
-            new_company[key] = value
-        elif isinstance(value, datetime.date):
-            new_company[key] = datetime.datetime(value.year, value.month, value.day).timestamp()
-        elif isinstance(value, datetime.datetime):
-            new_company[key] = value.timestamp()
-    client = FWAPIClient()
-    try:
-        new_sfc_key = create_sfc_key()
-        new_company['sfc_key'] = new_sfc_key
-        doc.sfc_key = new_sfc_key
-        action="Created"
-        client.create_company(new_company)
-        write_upload_log(status=True, fwcompany=new_company.get("name"), company=new_company,action=action)
-    except Exception as e:
-        write_upload_log(status=False, fwcompany=new_company.get("name"), company=new_company,action=action)   
-
+    doc.sfc_key = create_sfc_key()
+       
 def delete_erpnext_company(doc, method=None):
 
     """This hook is called when delete existing `company`.
