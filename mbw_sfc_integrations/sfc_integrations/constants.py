@@ -41,10 +41,10 @@ INSERT_ERPNEXT_EMPLOYEE = "mbw_sfc_integrations.sfc_integrations.employee.insert
 UPLOAD_ERPNEXT_EMPLOYEE = "mbw_sfc_integrations.sfc_integrations.employee.upload_erpnext_employee"
 DELETED_ERPNEXT_EMPLOYEE = "mbw_sfc_integrations.sfc_integrations.employee.deleted_erpnext_employee"
 
-INSERT_ERPNEXT_DEPARTMENT = "mbw_sfc_integrations.sfc_integrations.employee.insert_erpnext_employee"
+INSERT_ERPNEXT_DEPARTMENT = "mbw_sfc_integrations.sfc_integrations.department.insert_erpnext_employee"
 UPLOAD_ERPNEXT_DEPARTMENT = "mbw_sfc_integrations.sfc_integrations.department.upload_erpnext_department"
 DELETED_ERPNEXT_DEPARTMENT = "mbw_sfc_integrations.sfc_integrations.department.delete_erpnext_department"
 
-INSERT_ERPNEXT_COMPANY = "mbw_sfc_integrations.sfc_integrations.employee.insert_erpnext_employee"
+INSERT_ERPNEXT_COMPANY = "mbw_sfc_integrations.sfc_integrations.company.insert_erpnext_employee"
 UPLOAD_ERPNEXT_COMPANY = "mbw_sfc_integrations.sfc_integrations.company.upload_erpnext_company"
 DELETED_ERPNEXT_COMPANY = "mbw_sfc_integrations.sfc_integrations.company.delete_erpnext_company"

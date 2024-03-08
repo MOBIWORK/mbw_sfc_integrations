@@ -16,7 +16,6 @@ def upload_erpnext_employee(doc, method=None):
     """
     client = FWAPIClient()
     employee= doc.as_dict()
-    action = "Updated"
     new_employee = {}
     for key, value in employee.items():
         if not isinstance(value, (datetime.date, datetime.datetime)):
@@ -30,14 +29,14 @@ def upload_erpnext_employee(doc, method=None):
             action="Created"
             client.create_employee(new_employee)
         else:
-            action=action
+            action="Updated"
             client.update_employee(new_employee)
         write_upload_log(status=True,user= new_employee.get("user_id") if new_employee.get("user_id") else None, employee=new_employee,action=action, method=UPLOAD_ERPNEXT_EMPLOYEE)
     except Exception as e:
         write_upload_log(status=False,user= new_employee.get("user_id") if new_employee.get("user_id") else None, employee=new_employee,action=action, method=UPLOAD_ERPNEXT_EMPLOYEE)
 
 def insert_erpnext_employee(doc, method=None):
-        doc.sfc_key = create_sfc_key()
+    doc.sfc_key = create_sfc_key()
 
 
 def deleted_erpnext_employee(doc, method=None):
@@ -48,15 +47,15 @@ def deleted_erpnext_employee(doc, method=None):
     client = FWAPIClient()    
     try:
         client.delete_employee({
-            "name" : employee.name
+            "sfc_key" : employee['sfc_key']
         })
-        write_upload_log(status=True,user= employee.user_id if employee.user_id else None, employee=employee,action="Deleted",method=DELETED_ERPNEXT_EMPLOYEE)
+        write_upload_log(status=True,user= employee.user_id if employee.user_id else None, employee={'sfc_key': employee['sfc_key']},action="Deleted",method=DELETED_ERPNEXT_EMPLOYEE)
     except Exception as e:
-        write_upload_log(status=False,user= employee.user_id if employee.user_id else None, employee=employee,action="Deleted",method=DELETED_ERPNEXT_EMPLOYEE)
+        write_upload_log(status=False,user= employee.user_id if employee.user_id else None, employee={'sfc_key': employee['sfc_key']},action="Deleted",method=DELETED_ERPNEXT_EMPLOYEE)
 
 def write_upload_log(status: bool, user: None, employee, action="Created",method=INSERT_ERPNEXT_EMPLOYEE) -> None:
     if not status:
-        msg = _("Failed to upload employee to sfc") + "<br>"
+        msg = f"Failed to {action} employee to sfc" + "<br>"
         # msg += _("sfc reported errors:") + " " + ", ".join(user.errors.full_messages())
         msgprint(msg, title="Note", indicator="orange")
 

@@ -46,11 +46,11 @@ def delete_erpnext_company(doc, method=None):
     client = FWAPIClient()
     try:
         client.delete_company({
-             "name": company.name
+            "sfc_key": company['sfc_key']
 		})
-        write_upload_log(status=True, fwcompany=company.name, company=company,action="Deleted",method=DELETED_ERPNEXT_COMPANY)
+        write_upload_log(status=True, fwcompany=company.name, company={'sfc_key': company['sfc_key']},action="Deleted",method=DELETED_ERPNEXT_COMPANY)
     except Exception as e:
-        write_upload_log(status=False, fwcompany=e, company=company,action="Deleted",method=DELETED_ERPNEXT_COMPANY)        
+        write_upload_log(status=False, fwcompany=e, company={'sfc_key': company['sfc_key']},action="Deleted",method=DELETED_ERPNEXT_COMPANY)        
 		
 def write_upload_log(status: bool, fwcompany, company, action="Created",method=INSERT_ERPNEXT_COMPANY) -> None:
 	if not status:

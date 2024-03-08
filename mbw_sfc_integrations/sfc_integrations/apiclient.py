@@ -58,6 +58,7 @@ class FWAPIClient:
 		headers.update(self._auth_headers)
 
 		url = self.base_url + endpoint
+		print('========================= url: ', url, flush=True)
 
 		try:
 			response = requests.request(
@@ -95,7 +96,6 @@ class FWAPIClient:
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
-		print('========================= insert: ', flush=True)
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict)
 	
@@ -104,7 +104,6 @@ class FWAPIClient:
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
-		print('========================= update: ', flush=True)
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict,method="PUT")
 	
@@ -139,7 +138,7 @@ class FWAPIClient:
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
-
+		print('========================= value: ', company_dict, flush=True)
 		endpoint = "/company"
 		return self.request(endpoint=endpoint, body=company_dict,method="DELETE")
 	

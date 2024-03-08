@@ -16,7 +16,6 @@ def upload_erpnext_department(doc, method=None):
     """
     department= doc.as_dict()
     new_department = {}
-    action="Updated"
     for key,value in department.items():
         if not isinstance(value, (datetime.date, datetime.datetime)):
             new_department[key] = value
@@ -33,7 +32,7 @@ def upload_erpnext_department(doc, method=None):
             action="Created"
             client.create_department(new_department)
         else:
-            action=action
+            action="Updated"
             client.update_department(new_department)
         write_upload_log(status=True, fwdepartment=new_department.get("name"), department=new_department,action=action, method=UPLOAD_ERPNEXT_DEPARTMENT)
     except Exception as e:
@@ -51,15 +50,15 @@ def delete_erpnext_department(doc, method=None):
     client = FWAPIClient()    
     try:
         client.delete_department({
-            "name": department.name
+            "sfc_key": department['sfc_key']
         })
-        write_upload_log(status=True, fwdepartment=department.name, department=department,action="Deleted",method=DELETED_ERPNEXT_DEPARTMENT)
+        write_upload_log(status=True, fwdepartment=department.name, department={'sfc_key': department['sfc_key']},action="Deleted",method=DELETED_ERPNEXT_DEPARTMENT)
     except Exception as e:
-        write_upload_log(status=False, fwdepartment=department.name, department=department,action="Deleted",method=DELETED_ERPNEXT_DEPARTMENT)
+        write_upload_log(status=False, fwdepartment=department.name, department={'sfc_key': department['sfc_key']},action="Deleted",method=DELETED_ERPNEXT_DEPARTMENT)
 
 def write_upload_log(status: bool, fwdepartment, department, action="Created",method=INSERT_ERPNEXT_DEPARTMENT) -> None:
 	if not status:
-		msg = _("Failed to upload department to sfc") + "<br>"
+		msg = f"Failed to {action} department to sfc" + "<br>"
 		# msg += _("sfc reported errors:") + " " + ", ".join(fwdepartment.errors.full_messages())
 		msgprint(msg, title="Note", indicator="orange")
 
