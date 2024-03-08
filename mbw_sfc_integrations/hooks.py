@@ -229,14 +229,17 @@ app_license = "mit"
 
 doc_events = {
 	"Employee": {
+        "before_insert": "mbw_sfc_integrations.sfc_integrations.employee.insert_erpnext_employee",
 		"on_update": "mbw_sfc_integrations.sfc_integrations.employee.upload_erpnext_employee",
 		"after_delete": "mbw_sfc_integrations.sfc_integrations.employee.deleted_erpnext_employee",
 	},
     "Department": {
+        "before_insert": "mbw_sfc_integrations.sfc_integrations.department.insert_erpnext_department",
 		"on_update": "mbw_sfc_integrations.sfc_integrations.department.upload_erpnext_department",
 		"after_delete": "mbw_sfc_integrations.sfc_integrations.department.delete_erpnext_department",
 	},
 	"Company": {
+        "before_insert": "mbw_sfc_integrations.sfc_integrations.company.insert_erpnext_company",
 		"on_update": "mbw_sfc_integrations.sfc_integrations.company.upload_erpnext_company",
         "after_delete": "mbw_sfc_integrations.sfc_integrations.company.delete_erpnext_company",
 	},

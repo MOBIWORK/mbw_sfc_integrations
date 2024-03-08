@@ -95,6 +95,7 @@ class FWAPIClient:
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
+		print('========================= insert: ', flush=True)
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict)
 	
@@ -103,6 +104,7 @@ class FWAPIClient:
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
+		print('========================= update: ', flush=True)
 		endpoint = "/department"
 		return self.request(endpoint=endpoint, body=department_dict,method="PUT")
 	
@@ -129,7 +131,6 @@ class FWAPIClient:
 
 		ref: https://documentation.unicommerce.com/docs/createoredit-itemtype.html
 		"""
-
 		endpoint = "/company"
 		return self.request(endpoint=endpoint, body=company_dict,method="PUT")
 	
