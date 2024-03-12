@@ -3,15 +3,14 @@ name = "mbw_sfc_integrations"
 authors = [
     { name = "mbw", email = "mbw@gmail.com"}
 ]
-dependencies = [
-    "bson"
-]
+
 description = "Tich hop fast store"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
     # "frappe~=15.0.0" # Installed and managed by bench.
+    "bson"
 ]
 
 [build-system]
