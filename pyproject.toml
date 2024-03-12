@@ -3,6 +3,9 @@ name = "mbw_sfc_integrations"
 authors = [
     { name = "mbw", email = "mbw@gmail.com"}
 ]
+dependencies = [
+    "bson"
+]
 description = "Tich hop fast store"
 requires-python = ">=3.10"
 readme = "README.md"
