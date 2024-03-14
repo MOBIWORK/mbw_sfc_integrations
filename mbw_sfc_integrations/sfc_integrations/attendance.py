@@ -5,6 +5,7 @@ from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
 from mbw_sfc_integrations.sfc_integrations.validators import validate_date, validate_choice, validate_not_none
 from mbw_sfc_integrations.sfc_integrations.constants import STATUS_ATTENDANCE
 from mbw_sfc_integrations.sfc_integrations.helper import gen_response, exception_handel, get_value_child_doctype
+from frappe.utils import nowdate
 
 def create_attendance(payload, request_id=None):
 	try:
@@ -91,3 +92,72 @@ def get_attendance(**kwargs):
 
 	except Exception as e:
 		return exception_handel(e)
+
+def update_attendance_monthly(doc, method=None):
+	# Lấy ngày tháng để truy xuất dữ liệu
+	month = int(nowdate().split('-')[1])
+	year = int(nowdate().split('-')[0])
+	attendance = doc.as_dict()
+
+	exist_monthly_att = frappe.get_all(
+            'SFC Attendance Monthly Report',
+            filters={'thang': month, 'nam': year, 'employee': attendance['employee']},
+            fields=['name']
+        )
+	
+	employee_id = frappe.get_value('Employee', {'name': attendance['employee']}, 'user_id')
+	if exist_monthly_att:
+		monthly_att_doc = frappe.get_doc('SFC Attendance Monthly Report', exist_monthly_att[0]['name'])
+		monthly_att_doc.work_hours_monthly += attendance['work_hours']
+		
+		monthly_att_doc.save(ignore_permissions=True)
+
+	else:
+		monthly_att_doc = frappe.get_doc({
+			'doctype': 'SFC Attendance Monthly Report',
+			'year': year,
+			'month': month,
+			'employee': attendance['employee'],
+			'employee_id': employee_id,
+			'employee_name': attendance['employee_name'],
+			'department': attendance['department'],
+			'work_hours_monthly': attendance['work_hours'],
+			'number_of_hours_monthly': attendance['number_of_hours'],
+			'late_arrival_time_monthly': attendance['late_arrival_time'],
+			'late_arrival_work_monthly': attendance['late_arrival_work'],
+			'number_of_late_arrival': 1 if attendance['late_arrival_time'] > 0 else 0,
+			'early_arrival_time_monthly': attendance['early_arrival_time'],
+			'early_arrival_work_monthly': attendance['early_arrival_work'],
+			'number_of_early_arrival': 1 if attendance['early_arrival_time'] > 0 else 0,
+			'number_work_absent_monthly': attendance['number_work_absent'],
+			'number_hour_absent_monthly': attendance['number_hour_absent'],
+			'number_absent': 1 if attendance['number_hour_absent'] > 0 else 0,
+			'number_of_breaktime': 1 if attendance['is_breaktime'] == True else 0,
+			'number_work_unexplain_absence_monthly': attendance['number_work_unexplain_absence'],
+			'number_work_explain_absence_monthly': attendance['work_hours'] if attendance['is_absence_letter'] == True else 0,
+			'number_hour_explain_absence_monthly': attendance['number_of_hours'] if attendance['is_absence_letter'] == True else 0,
+			'number_work_shift_monthly': attendance['number_work_shift'],
+			'number_of_holiday_monthly': attendance['number_of_holiday'],
+			'work_of_mission_monthly': attendance['work_of_mission'],
+			'extra_hour_day_monthly': attendance['extra_hour_day'],
+			'extra_hour_night_monthly': attendance['extra_hour_night'],
+			'extra_hour_monthly': attendance['extra_hour_day'] + attendance['extra_hour_night'],
+			'extra_hour_off_day_monthly': attendance['extra_hour_off_day'],
+			'extra_hour_off_night_monthly': attendance['extra_hour_off_night'],
+			'extra_hour_off_monthly': attendance['extra_hour_off_day'] + attendance['extra_hour_off_night'],
+			'extra_hour_holiday_day_monthly': attendance['extra_hour_holiday_day'],
+			'extra_hour_holiday_night_monthly': attendance['extra_hour_holiday_night'],
+			'extra_hour_holiday_monthly': attendance['extra_hour_holiday_day'] + attendance['extra_hour_holiday_night'],
+			'extra_hours_monthly': attendance['extra_hours'],
+			'Number of extra hour': 1 if attendance['is_extra_letter'] == True else 0,
+			'overtime_hour_off_monthly': attendance['overtime_hour_off'],
+			'overtime_hour_holiday_monthly': attendance['overtime_hour_holiday'],
+			'overtime_works_monthly': attendance['overtime_works'],
+			'overtime_hours_monthly': attendance['overtime_hours'],
+			'number_of_overtime': 1 if attendance['is_overtime_letter'] == True else 0,
+			'number_work_holiday_monthly': attendance['number_work_holiday'],
+			'number_hour_holiday_monthly': attendance['number_hour_holiday'],
+			'number_of_day_work': 1 if attendance['is_checkin'] == True else 0,
+			'number_work_shift_monthly': attendance['number_work_shift']
+		})
+		monthly_att_doc.insert(ignore_permissions=True)
