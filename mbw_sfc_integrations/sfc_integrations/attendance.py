@@ -7,6 +7,7 @@ from mbw_sfc_integrations.sfc_integrations.constants import STATUS_ATTENDANCE
 from mbw_sfc_integrations.sfc_integrations.helper import gen_response, exception_handel, get_value_child_doctype
 from frappe.utils import nowdate, getdate
 import calendar
+from datetime import date
 
 def create_attendance(payload, request_id=None):
 	try:
@@ -117,6 +118,7 @@ def update_attendance_monthly(doc, method=None):
 	end_date_str = f'{year:04d}-{month:02d}-{last_day_of_month:02d}'
 	start_date = getdate(start_date_str)
 	end_date = getdate(end_date_str)
+	today = date.today()
 	attendance = doc.as_dict()
 	employee_id = frappe.get_value('Employee', {'name': attendance['employee']}, 'user_id')
 	list_attendances = list_attendance(employee=attendance['employee'], start_date=start_date, end_date=end_date)
@@ -282,6 +284,7 @@ def update_attendance_monthly(doc, method=None):
 			if i['is_checkin_letter'] == True:
 				sign = 'GT'
 			monthly_att_doc.append('attendance_daily', {
+				'att_day': today,
 				'work_hours': i['work_hours'],
 				'sign': sign
 			})
@@ -383,6 +386,7 @@ def update_attendance_monthly(doc, method=None):
 			'number_of_day_work': 1 if attendance['is_checkin'] == True else 0,
 			'number_work_shift_monthly': attendance['number_work_shift'],
 			'attendance_daily': [{
+				'att_day': today,
 				'work_hours': attendance['work_hours'],
 				'sign': sign
 			}]
