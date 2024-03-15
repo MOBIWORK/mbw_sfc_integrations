@@ -58,7 +58,7 @@ def update_attendance(payload, request_id=None):
 	else:
 		create_sfc_log(status="Success")
 
-@frappe.whitelist(methods='GET', allow_guest=True)
+@frappe.whitelist( allow_guest=True)
 def get_attendance(**kwargs):
 	try:
 		filters = {}
