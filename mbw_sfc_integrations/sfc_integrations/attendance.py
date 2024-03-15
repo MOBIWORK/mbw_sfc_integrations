@@ -93,6 +93,8 @@ def get_attendance(**kwargs):
 	except Exception as e:
 		return exception_handel(e)
 
+# def exis_attendance_daily()
+
 def update_attendance_monthly(doc, method=None):
 	# Lấy ngày tháng để truy xuất dữ liệu
 	month = int(nowdate().split('-')[1])
@@ -101,7 +103,7 @@ def update_attendance_monthly(doc, method=None):
 
 	exist_monthly_att = frappe.get_all(
             'SFC Attendance Monthly Report',
-            filters={'thang': month, 'nam': year, 'employee': attendance['employee']},
+            filters={'month': month, 'year': year, 'employee': attendance['employee']},
             fields=['name']
         )
 	
@@ -149,12 +151,26 @@ def update_attendance_monthly(doc, method=None):
 			'extra_hour_holiday_night_monthly': attendance['extra_hour_holiday_night'],
 			'extra_hour_holiday_monthly': attendance['extra_hour_holiday_day'] + attendance['extra_hour_holiday_night'],
 			'extra_hours_monthly': attendance['extra_hours'],
-			'Number of extra hour': 1 if attendance['is_extra_letter'] == True else 0,
+			'number_of_extra_hour': 1 if attendance['is_extra_letter'] == True else 0,
 			'overtime_hour_off_monthly': attendance['overtime_hour_off'],
 			'overtime_hour_holiday_monthly': attendance['overtime_hour_holiday'],
-			'overtime_works_monthly': attendance['overtime_works'],
 			'overtime_hours_monthly': attendance['overtime_hours'],
+			'overtime_hour_total': attendance['overtime_hour_off'] +  attendance['overtime_hour_holiday'] + attendance['overtime_hours'],
+			'overtime_work_off_monthly': attendance['overtime_work_off'],
+			'overtime_work_holiday_monthly': attendance['overtime_work_holiday'],
+			'overtime_works_monthly': attendance['overtime_works'],
+			'overtime_works_total': attendance['overtime_works'] + attendance['overtime_work_off'] + attendance['overtime_work_holiday'],
+			'overtime_works_extract': attendance['overtime_works_extract'],
 			'number_of_overtime': 1 if attendance['is_overtime_letter'] == True else 0,
+			'throughout_hour_monthly': attendance['throughout_hour'],
+			'throughout_work_monthly': attendance['throughout_work'],
+			'throughout_work_extract_monthly': attendance['throughout_work_extract'],
+			'throughout_hour_extract_monthly': attendance['throughout_hour_extract'],
+			'hc_work_monthly': attendance['hc_work'],
+			'hc_hour_monthly': attendance['hc_hour'],
+			'hc_work_extract_monthly': attendance['hc_work_extract'],
+			'hc_hour_extract_monthly': attendance['hc_hour_extract'],
+			'hc_number': 0,
 			'number_work_holiday_monthly': attendance['number_work_holiday'],
 			'number_hour_holiday_monthly': attendance['number_hour_holiday'],
 			'number_of_day_work': 1 if attendance['is_checkin'] == True else 0,
