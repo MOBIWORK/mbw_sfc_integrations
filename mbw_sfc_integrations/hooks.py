@@ -244,6 +244,7 @@ doc_events = {
         "after_delete": "mbw_sfc_integrations.sfc_integrations.company.delete_erpnext_company",
 	},
     "Attendance": {
-        "on_update": "mbw_sfc_integrations.sfc_integrations.attendance.update_attendance_monthly"
+        "on_submit": "mbw_sfc_integrations.sfc_integrations.attendance.update_attendance_monthly",
+        "on_update_after_submit": "mbw_sfc_integrations.sfc_integrations.attendance.update_attendance_monthly"
 	}
 }
