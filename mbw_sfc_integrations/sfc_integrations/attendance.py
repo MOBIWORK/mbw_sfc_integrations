@@ -118,7 +118,6 @@ def update_attendance_monthly(doc, method=None):
 	start_date = getdate(start_date_str)
 	end_date = getdate(end_date_str)
 	attendance = doc.as_dict()
-	employee_id = frappe.get_value('Employee', {'name': attendance['employee']}, 'user_id')
 	list_attendances = list_attendance(employee=attendance['employee'], start_date=start_date, end_date=end_date)
 
 	exist_monthly_att = frappe.get_all(
@@ -133,7 +132,6 @@ def update_attendance_monthly(doc, method=None):
 		monthly_att_doc.year = year
 		monthly_att_doc.month = month
 		monthly_att_doc.employee = attendance['employee']
-		monthly_att_doc.employee_id = employee_id
 		monthly_att_doc.employee_name = attendance['employee_name']
 		monthly_att_doc.department = attendance['department']
 		monthly_att_doc.work_hours_monthly = 0
@@ -213,10 +211,10 @@ def update_attendance_monthly(doc, method=None):
 			monthly_att_doc.work_of_mission_monthly += i['work_of_mission']
 			monthly_att_doc.extra_hour_day_monthly += i['extra_hour_day']
 			monthly_att_doc.extra_hour_night_monthly += i['extra_hour_night']
-			monthly_att_doc.extra_hour_monthly += i['extra_hour_day']
+			monthly_att_doc.extra_hour_monthly += (i['extra_hour_day']+ i['extra_hour_night'])
 			monthly_att_doc.extra_hour_off_day_monthly += i['extra_hour_off_day']
-			monthly_att_doc.extra_hour_off_monthly += (i['extra_hour_off_day'] + i['extra_hour_off_night'])
 			monthly_att_doc.extra_hour_off_night_monthly += i['extra_hour_off_night']
+			monthly_att_doc.extra_hour_off_monthly += (i['extra_hour_off_day'] + i['extra_hour_off_night'])
 			monthly_att_doc.extra_hour_holiday_day_monthly += i['extra_hour_holiday_day']
 			monthly_att_doc.extra_hour_holiday_night_monthly += i['extra_hour_holiday_night']
 			monthly_att_doc.extra_hour_holiday_monthly += (i['extra_hour_holiday_day'] + i['extra_hour_holiday_night'])
@@ -328,7 +326,6 @@ def update_attendance_monthly(doc, method=None):
 			'year': year,
 			'month': month,
 			'employee': attendance['employee'],
-			'employee_id': employee_id,
 			'employee_name': attendance['employee_name'],
 			'department': attendance['department'],
 			'work_hours_monthly': attendance['work_hours'],
