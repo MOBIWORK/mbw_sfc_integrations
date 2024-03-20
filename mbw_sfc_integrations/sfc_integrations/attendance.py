@@ -27,7 +27,14 @@ def create_attendance_from_payload(payload):
     # Xử lý dữ liệu từ payload và tạo Attendance mới
     attendance = frappe.new_doc("Attendance")
 
-    fields = ["employee", "company", "shift", "working_hours", "late_entry", "early_exit", "late_check_in", "early_check_out", "custom_number_of_late_days", "custom_late_working_hours"]
+    fields = ["employee", "company", "shift", "work_hours", "number_of_hours", "late_arrival_time", "late_arrival_work", "early_arrival_time", "early_arrival_work", "number_hour_absent", "number_work_absent", "is_breaktime",
+			  "number_of_holiday", "number_of_absence", "overtime_hours", "overtime_works", "overtime_hour_holiday", "overtime_hour_off", "number_of_mission", "work_of_mission", "probation_hours", "probation_works",
+			  "is_absence_letter", "is_later_letter", "is_extra_letter", "is_overtime_letter", "is_misson_letter", "is_worktime_letter", "is_checkin_letter", "is_shiftchange_letter", "is_holiday", "is_abnormal", 
+			  "is_event", "is_unpaid_leave", "is_unexplained_absence", "number_hour_unexplain_absence", "number_work_unexplain_absence", "is_off", "is_checkin", "number_work_holiday", "number_hour_holiday", "extra_hours",
+			  "extra_hour_holiday", "extra_hour_off", "extra_hour_day", "extra_hour_night", "shift_name", "is_breaktime", "type_of_contract", "automated_timekeeping_shift", "uncheck_late_soon_shift", "number_of_checkin_shift",
+			  "number_work_shift", "number_hour_shift", "hc_hour", "hc_work", "hc_work", "is_faceid", "is_over_day", "hc_hour_extract", "hc_work_extract", "throughout_hour", "throughout_work", "overtime_work_off", "extra_hour_off_day",
+			  "extra_hour_off_night", "overtime_work_holiday", "extra_hour_holiday_day", "overtime_works_extract", "throughout_hour_extract"
+			  ]
     for key, value in payload.items():
         if key in fields:
            attendance.set(key, value)
