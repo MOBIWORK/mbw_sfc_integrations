@@ -1,6 +1,5 @@
 import frappe
 from frappe import _
-from frappe.utils import get_time
 from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
 from mbw_sfc_integrations.sfc_integrations.validators import validate_date, validate_choice, validate_not_none
 from mbw_sfc_integrations.sfc_integrations.constants import STATUS_ATTENDANCE
@@ -52,12 +51,21 @@ def update_attendance(payload, request_id=None):
 
         # Lấy Attendance cần cập nhật từ cơ sở dữ liệu
 		sfc_key = validate_not_none(payload.get('sfc_key'))
-		if frappe.db.exists("Attendance", {"sfc_key":sfc_key}):
-			attendance_name = frappe.get_doc("Attendance", {"sfc_key":sfc_key})
+		if frappe.db.exists("Attendance", {"sfc_key": sfc_key}):
+			attendance_name = frappe.get_doc("Attendance", {"sfc_key": sfc_key})
+			fileds_to_update = ["work_hours", "number_of_hours", "late_arrival_time", "late_arrival_work", "early_arrival_time", "early_arrival_work", "number_hour_absent", "number_work_absent", "is_breaktime",
+			  "number_of_holiday", "number_of_absence", "overtime_hours", "overtime_works", "overtime_hour_holiday", "overtime_hour_off", "number_of_mission", "work_of_mission", "probation_hours", "probation_works",
+			  "is_absence_letter", "is_later_letter", "is_extra_letter", "is_overtime_letter", "is_misson_letter", "is_worktime_letter", "is_checkin_letter", "is_shiftchange_letter", "is_holiday", "is_abnormal", 
+			  "is_event", "is_unpaid_leave", "is_unexplained_absence", "number_hour_unexplain_absence", "number_work_unexplain_absence", "is_off", "is_checkin", "number_work_holiday", "number_hour_holiday", "extra_hours",
+			  "extra_hour_holiday", "extra_hour_off", "extra_hour_day", "extra_hour_night", "shift_name", "is_breaktime", "type_of_contract", "automated_timekeeping_shift", "uncheck_late_soon_shift", "number_of_checkin_shift",
+			  "number_work_shift", "number_hour_shift", "hc_hour", "hc_work", "hc_work", "is_faceid", "is_over_day", "hc_hour_extract", "hc_work_extract", "throughout_hour", "throughout_work", "overtime_work_off", "extra_hour_off_day",
+			  "extra_hour_off_night", "overtime_work_holiday", "extra_hour_holiday_day", "overtime_works_extract", "throughout_hour_extract"
+			  ]
 
 			# Cập nhật các trường dữ liệu mới từ payload
 			for field, value in dict(payload).items():
-				setattr(attendance_name, field, value)
+				if field in fileds_to_update:
+					setattr(attendance_name, field, value)
 			attendance_name.save()
 		else:
 			frappe.throw(("Attendance không tồn tại!"))
@@ -90,7 +98,7 @@ def get_attendance(**kwargs):
 		for i in data:
 			i['attendance_daily'] = get_value_child_doctype('SFC Attendance Monthly Report', i['name'], 'attendance_daily')
 
-		data_count = len(frappe.db.get_list('SFC Attendance Monthly Report', filters=filters,fields=['*']))
+		data_count = frappe.db.count('SFC Attendance Monthly Report', filters=filters)
 		return gen_response(200, 'Thành công', {
 			"data": data,
 			"totals": data_count,
@@ -105,8 +113,7 @@ def get_attendance(**kwargs):
 def list_attendance(employee, start_date, end_date):
         list_attendances = frappe.get_all(
             'Attendance',
-            filters={"creation": (">=", start_date), 
-                     "creation": ("<=", end_date), 
+            filters={"creation": ("between", [start_date, end_date]), 
                      "employee": employee, 
 					 "docstatus": 1
                 	},
@@ -191,7 +198,6 @@ def update_attendance_monthly(doc, method=None):
 		monthly_att_doc.number_work_holiday_monthly = 0
 		monthly_att_doc.number_hour_holiday_monthly = 0
 		monthly_att_doc.number_of_day_work = 0
-		monthly_att_doc.number_work_shift_monthly = 0
 
 		sign = ''
 		for i in list_attendances:
@@ -252,7 +258,6 @@ def update_attendance_monthly(doc, method=None):
 			monthly_att_doc.number_hour_holiday_monthly += i['number_hour_holiday']
 			if i['is_checkin'] == True:
 				monthly_att_doc.number_of_day_work += 1
-			monthly_att_doc.number_work_shift_monthly += i['number_work_shift']
 
 			if i['is_off'] == True:
 				sign = 'OFF'
@@ -386,7 +391,6 @@ def update_attendance_monthly(doc, method=None):
 			'number_work_holiday_monthly': attendance['number_work_holiday'],
 			'number_hour_holiday_monthly': attendance['number_hour_holiday'],
 			'number_of_day_work': 1 if attendance['is_checkin'] == True else 0,
-			'number_work_shift_monthly': attendance['number_work_shift'],
 			'attendance_daily': [{
 				'att_day': attendance['attendance_date'],
 				'work_hours': attendance['work_hours'],

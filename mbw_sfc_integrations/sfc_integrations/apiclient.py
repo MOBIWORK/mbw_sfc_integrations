@@ -58,7 +58,6 @@ class FWAPIClient:
 		headers.update(self._auth_headers)
 
 		url = self.base_url + endpoint
-		print('========================= url: ', url, flush=True)
 
 		try:
 			response = requests.request(
