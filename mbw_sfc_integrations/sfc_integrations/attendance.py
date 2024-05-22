@@ -32,7 +32,7 @@ def create_attendance_from_payload(payload):
 			  "is_event", "is_unpaid_leave", "is_unexplained_absence", "number_hour_unexplain_absence", "number_work_unexplain_absence", "is_off", "is_checkin", "number_work_holiday", "number_hour_holiday", "extra_hours",
 			  "extra_hour_holiday", "extra_hour_off", "extra_hour_day", "extra_hour_night", "shift_name", "is_breaktime", "type_of_contract", "automated_timekeeping_shift", "uncheck_late_soon_shift", "number_of_checkin_shift",
 			  "number_work_shift", "number_hour_shift", "hc_hour", "hc_work", "hc_work", "is_faceid", "is_over_day", "hc_hour_extract", "hc_work_extract", "throughout_hour", "throughout_work", "overtime_work_off", "extra_hour_off_day",
-			  "extra_hour_off_night", "overtime_work_holiday", "extra_hour_holiday_day", "overtime_works_extract", "throughout_hour_extract"
+			  "extra_hour_off_night", "overtime_work_holiday", "extra_hour_holiday_day", "overtime_works_extract", "throughout_hour_extract", "broken_shift_hours", "work_hours_broken_holidays", "work_hours_straight_holidays", "straight_shift_hours"
 			  ]
     for key, value in payload.items():
         if key in fields:
@@ -59,7 +59,7 @@ def update_attendance(payload, request_id=None):
 			  "is_event", "is_unpaid_leave", "is_unexplained_absence", "number_hour_unexplain_absence", "number_work_unexplain_absence", "is_off", "is_checkin", "number_work_holiday", "number_hour_holiday", "extra_hours",
 			  "extra_hour_holiday", "extra_hour_off", "extra_hour_day", "extra_hour_night", "shift_name", "is_breaktime", "type_of_contract", "automated_timekeeping_shift", "uncheck_late_soon_shift", "number_of_checkin_shift",
 			  "number_work_shift", "number_hour_shift", "hc_hour", "hc_work", "hc_work", "is_faceid", "is_over_day", "hc_hour_extract", "hc_work_extract", "throughout_hour", "throughout_work", "overtime_work_off", "extra_hour_off_day",
-			  "extra_hour_off_night", "overtime_work_holiday", "extra_hour_holiday_day", "overtime_works_extract", "throughout_hour_extract"
+			  "extra_hour_off_night", "overtime_work_holiday", "extra_hour_holiday_day", "overtime_works_extract", "throughout_hour_extract", "broken_shift_hours", "work_hours_broken_holidays", "work_hours_straight_holidays", "straight_shift_hours"
 			  ]
 
 			# Cập nhật các trường dữ liệu mới từ payload
@@ -198,6 +198,10 @@ def update_attendance_monthly(doc, method=None):
 		monthly_att_doc.number_work_holiday_monthly = 0
 		monthly_att_doc.number_hour_holiday_monthly = 0
 		monthly_att_doc.number_of_day_work = 0
+		monthly_att_doc.broken_shift_hours = 0
+		monthly_att_doc.work_hours_broken_holidays = 0
+		monthly_att_doc.work_hours_straight_holidays = 0
+		monthly_att_doc.straight_shift_hours = 0
 
 		sign = ''
 		for i in list_attendances:
@@ -256,6 +260,10 @@ def update_attendance_monthly(doc, method=None):
 			monthly_att_doc.hc_number += 0
 			monthly_att_doc.number_work_holiday_monthly += i['number_work_holiday']
 			monthly_att_doc.number_hour_holiday_monthly += i['number_hour_holiday']
+			monthly_att_doc.work_hours_straight_holidays_monthly += i['work_hours_straight_holidays']
+			monthly_att_doc.work_hours_broken_holidays_monthly += i['work_hours_broken_holidays']
+			monthly_att_doc.straight_shift_hours_monthly += i['straight_shift_hours']
+			monthly_att_doc.broken_shift_hours_monthly += i['broken_shift_hours']
 			if i['is_checkin'] == True:
 				monthly_att_doc.number_of_day_work += 1
 
@@ -390,6 +398,10 @@ def update_attendance_monthly(doc, method=None):
 			'hc_number': 0,
 			'number_work_holiday_monthly': attendance['number_work_holiday'],
 			'number_hour_holiday_monthly': attendance['number_hour_holiday'],
+			'work_hours_straight_holidays_monthly': attendance['work_hours_straight_holidays'],
+			'work_hours_broken_holidays_monthly': attendance['work_hours_broken_holidays'],
+			'straight_shift_hours_monthly': attendance['straight_shift_hours'],
+			'broken_shift_hours_monthly': attendance['broken_shift_hours'],
 			'number_of_day_work': 1 if attendance['is_checkin'] == True else 0,
 			'attendance_daily': [{
 				'att_day': attendance['attendance_date'],
