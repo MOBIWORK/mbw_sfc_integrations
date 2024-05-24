@@ -6,6 +6,7 @@ from mbw_sfc_integrations.sfc_integrations.constants import STATUS_ATTENDANCE
 from mbw_sfc_integrations.sfc_integrations.helper import gen_response, exception_handel, get_value_child_doctype
 from frappe.utils import nowdate, getdate
 import calendar
+from datetime import datetime
 
 def create_attendance(payload, request_id=None):
 	try:
@@ -124,8 +125,9 @@ def list_attendance(employee, start_date, end_date):
 
 def update_attendance_monthly(doc, method=None):
 	# Lấy ngày tháng để truy xuất dữ liệu
-	month = int(nowdate().split('-')[1])
-	year = int(nowdate().split('-')[0])
+	create_date = doc.attendance_date
+	month = int(create_date.month)
+	year = int(create_date.year)
 	start_date_str = f'{year:04d}-{month:02d}-01'
 	last_day_of_month = calendar.monthrange(year, month)[1]
 	end_date_str = f'{year:04d}-{month:02d}-{last_day_of_month:02d}'
@@ -198,10 +200,10 @@ def update_attendance_monthly(doc, method=None):
 		monthly_att_doc.number_work_holiday_monthly = 0
 		monthly_att_doc.number_hour_holiday_monthly = 0
 		monthly_att_doc.number_of_day_work = 0
-		monthly_att_doc.broken_shift_hours = 0
-		monthly_att_doc.work_hours_broken_holidays = 0
-		monthly_att_doc.work_hours_straight_holidays = 0
-		monthly_att_doc.straight_shift_hours = 0
+		monthly_att_doc.broken_shift_hours_monthly = 0
+		monthly_att_doc.work_hours_broken_holidays_monthly = 0
+		monthly_att_doc.work_hours_straight_holidays_monthly = 0
+		monthly_att_doc.straight_shift_hours_monthly = 0
 
 		sign = ''
 		for i in list_attendances:
