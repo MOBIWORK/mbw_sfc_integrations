@@ -4,7 +4,7 @@ from mbw_sfc_integrations.sfc_integrations.utils import create_sfc_log
 from mbw_sfc_integrations.sfc_integrations.validators import validate_date, validate_choice, validate_not_none
 from mbw_sfc_integrations.sfc_integrations.constants import STATUS_ATTENDANCE
 from mbw_sfc_integrations.sfc_integrations.helper import gen_response, exception_handel, get_value_child_doctype
-from frappe.utils import nowdate, getdate
+from frappe.utils import getdate
 import calendar
 from datetime import datetime
 
@@ -114,7 +114,7 @@ def get_attendance(**kwargs):
 def list_attendance(employee, start_date, end_date):
         list_attendances = frappe.get_all(
             'Attendance',
-            filters={"creation": ("between", [start_date, end_date]), 
+            filters={"attendance_date": ("between", [start_date, end_date]), 
                      "employee": employee, 
 					 "docstatus": 1
                 	},
@@ -137,14 +137,14 @@ def update_attendance_monthly(doc, method=None):
 	attendance = doc.as_dict()
 	list_attendances = list_attendance(employee=attendance['employee'], start_date=start_date, end_date=end_date)
 
-	exist_monthly_att = frappe.get_all(
+	exist_monthly_att = frappe.get_value(
             'SFC Attendance Monthly Report',
-            filters={'month': month, 'year': year, 'employee': attendance['employee']},
-            fields=['name'],
+            {'month': month, 'year': year, 'employee': attendance['employee']},
+            'name',
         )
 	
 	if exist_monthly_att:
-		frappe.delete_doc('SFC Attendance Monthly Report', exist_monthly_att[0]['name'])
+		frappe.delete_doc('SFC Attendance Monthly Report', exist_monthly_att)
 		monthly_att_doc = frappe.new_doc('SFC Attendance Monthly Report')
 		monthly_att_doc.year = year
 		monthly_att_doc.month = month
