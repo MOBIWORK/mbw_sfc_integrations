@@ -126,7 +126,10 @@ def list_attendance(employee, start_date, end_date):
 def update_attendance_monthly(doc, method=None):
 	# Lấy ngày tháng để truy xuất dữ liệu
 	cr_date = doc.attendance_date
-	create_date =  datetime.strptime(cr_date, '%Y-%m-%d')
+	if isinstance(cr_date, str):
+		create_date = datetime.strptime(cr_date, '%Y-%m-%d')
+	else:
+		create_date = cr_date
 	month = int(create_date.month)
 	year = int(create_date.year)
 	start_date_str = f'{year:04d}-{month:02d}-01'
