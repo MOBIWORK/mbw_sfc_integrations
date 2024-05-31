@@ -80,27 +80,27 @@ def update_attendance(payload, request_id=None):
 def get_attendance(**kwargs):
 	try:
 		filters = {}
-		month = kwargs.get('month')
-		year = kwargs.get('year')
-		employee = kwargs.get('employee')
-		department = kwargs.get('department')
-		page_number = int(kwargs.get('page_number')) if kwargs.get('page_number') and int(kwargs.get('page_number')) >= 1 else 1
-		page_size =  int(kwargs.get('page_size', 20))
+		month = kwargs.get("month")
+		year = kwargs.get("year")
+		employee = kwargs.get("employee")
+		department = kwargs.get("department")
+		page_number = int(kwargs.get("page_number")) if kwargs.get("page_number") and int(kwargs.get("page_number")) >= 1 else 1
+		page_size =  int(kwargs.get("page_size", 20))
 		if month:
-			filters['month'] = month
+			filters["month"] = month
 		if year:
-			filters['year'] = year
+			filters["year"] = year
 		if employee:
-			filters['employee'] = employee
+			filters["employee"] = employee
 		if department:
-			filters['department'] = department
+			filters["department"] = department
 
-		data = frappe.db.get_list('SFC Attendance Monthly Report', filters=filters, start=page_size*(page_number-1), page_length=page_size, fields=['*'])
+		data = frappe.db.get_all("SFC Attendance Monthly Report", filters=filters, start=page_size*(page_number-1), page_length=page_size, fields=['*'])
 		for i in data:
-			i['attendance_daily'] = get_value_child_doctype('SFC Attendance Monthly Report', i['name'], 'attendance_daily')
+			i['attendance_daily'] = get_value_child_doctype("SFC Attendance Monthly Report", i["name"], "attendance_daily")
 
-		data_count = frappe.db.count('SFC Attendance Monthly Report', filters=filters)
-		return gen_response(200, 'Thành công', {
+		data_count = frappe.db.count("SFC Attendance Monthly Report", filters=filters)
+		return gen_response(200, "Thành công", {
 			"data": data,
 			"totals": data_count,
 			"page_number": page_number,
@@ -138,12 +138,12 @@ def update_attendance_monthly(doc, method=None):
 	start_date = getdate(start_date_str)
 	end_date = getdate(end_date_str)
 	attendance = doc.as_dict()
-	list_attendances = list_attendance(employee=attendance['employee'], start_date=start_date, end_date=end_date)
+	list_attendances = list_attendance(employee=attendance["employee"], start_date=start_date, end_date=end_date)
 
 	exist_monthly_att = frappe.get_value(
-            'SFC Attendance Monthly Report',
-            {'month': month, 'year': year, 'employee': attendance['employee']},
-            'name',
+            "SFC Attendance Monthly Report",
+            {"month": month, "year": year, "employee": attendance["employee"]},
+            "name",
         )
 	
 	if exist_monthly_att:
