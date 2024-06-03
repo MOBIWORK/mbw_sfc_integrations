@@ -39,8 +39,8 @@ def create_attendance_from_payload(payload):
         if key in fields:
            attendance.set(key, value)
     attendance.status = validate_choice(STATUS_ATTENDANCE)(payload.get("status", "Present"))
-    attendance.attendance_date = validate_date(payload.get("attendance_date")/1000)
-    attendance.sfc_key = validate_not_none(payload.get('sfc_key'))
+    attendance.attendance_date = validate_date(payload.get("attendance_date") / 1000)
+    attendance.sfc_key = validate_not_none(payload.get("sfc_key"))
 
     return attendance
 
@@ -51,7 +51,7 @@ def update_attendance(payload, request_id=None):
 		frappe.flags.request_id = request_id
 
         # Lấy Attendance cần cập nhật từ cơ sở dữ liệu
-		sfc_key = validate_not_none(payload.get('sfc_key'))
+		sfc_key = validate_not_none(payload.get("sfc_key"))
 		if frappe.db.exists("Attendance", {"sfc_key": sfc_key}):
 			attendance_name = frappe.get_doc("Attendance", {"sfc_key": sfc_key})
 			fileds_to_update = ["work_hours", "number_of_hours", "late_arrival_time", "late_arrival_work", "early_arrival_time", "early_arrival_work", "number_hour_absent", "number_work_absent", "is_breaktime",
@@ -127,7 +127,10 @@ def update_attendance_monthly(doc, method=None):
 	# Lấy ngày tháng để truy xuất dữ liệu
 	cr_date = doc.attendance_date
 	if isinstance(cr_date, str):
-		create_date = datetime.strptime(cr_date, '%Y-%m-%d')
+		try:
+			create_date = datetime.strptime(cr_date, '%Y-%m-%d %H:%M:%S')
+		except ValueError:
+			create_date = datetime.strptime(cr_date, '%Y-%m-%d')
 	else:
 		create_date = cr_date
 	month = int(create_date.month)
