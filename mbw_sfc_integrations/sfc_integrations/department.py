@@ -10,19 +10,37 @@ from mbw_sfc_integrations.sfc_integrations.apiclient import FWAPIClient
 from mbw_sfc_integrations.sfc_integrations.constants import UPLOAD_ERPNEXT_DEPARTMENT, DELETED_ERPNEXT_DEPARTMENT, INSERT_ERPNEXT_DEPARTMENT
 import datetime
 
-#after create
+def convert_datetime_to_timestamp(obj):
+    """
+    Chuyển đổi datetime thành timestamp.
+    """
+    if isinstance(obj, (datetime.date, datetime.datetime)):
+        return obj.timestamp()
+    return obj
+
+def convert_dict_datetime_to_timestamp(data):
+    """
+    Chuyển đổi tất cả các trường datetime trong dict thành timestamp.
+    """
+    return {
+        key: convert_datetime_to_timestamp(value)
+        if isinstance(value, (datetime.date, datetime.datetime))
+        else value
+        for key, value in data.items()
+    }
+
+# after create
 def upload_erpnext_department(doc, method=None):
     """This hook is called when updating existing `Department`.
     """
     department= doc.as_dict()
-    new_department = {}
-    for key,value in department.items():
-        if not isinstance(value, (datetime.date, datetime.datetime)):
-            new_department[key] = value
-        elif isinstance(value, datetime.date):
-            new_department[key] = datetime.datetime(value.year, value.month, value.day).timestamp()
-        elif isinstance(value, datetime.datetime):
-            new_department[key] = value.timestamp()
+    new_department = convert_dict_datetime_to_timestamp(department)
+    
+    for approver_type in ['shift_request_approver', 'leave_approvers', 'expense_approvers']:
+        if approver_type in new_department:
+            for approver in new_department[approver_type]:
+                approver['creation'] = convert_datetime_to_timestamp(approver.get('creation'))
+                approver['modified'] = convert_datetime_to_timestamp(approver.get('modified'))
     client = FWAPIClient()
     company = frappe.db.get_value("Company",department.company,["company_name","company_code"], as_dict=1)
     new_department["company_code"] = company.get("company_code")
