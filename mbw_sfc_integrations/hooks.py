@@ -248,3 +248,20 @@ doc_events = {
         "on_update_after_submit": "mbw_sfc_integrations.sfc_integrations.attendance.update_attendance_monthly"
 	}
 }
+
+
+fixtures = [
+    {
+        "doctype": "Custom Field",
+        "filters": [["module", "in", ("SFC Integrations")]]
+    },
+    {
+        "doctype": "Client Script",
+        "filters": [["module", "in", ("SFC Integrations")]]
+    },
+    {
+        "doctype": "Server Script",
+        "filters": [["module", "in", ("SFC Integrations")]]
+    },
+
+]
