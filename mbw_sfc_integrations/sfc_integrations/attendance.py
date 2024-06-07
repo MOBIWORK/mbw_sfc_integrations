@@ -311,7 +311,9 @@ def update_attendance_monthly(doc, method=None):
 			monthly_att_doc.append('attendance_daily', {
 				'att_day': i['attendance_date'],
 				'work_hours': i['work_hours'],
-				'sign': sign
+				'sign': sign,
+				'shift': i['shift'],
+				'number_of_hours': i['number_of_hours']
 			})
 
 		monthly_att_doc.insert(ignore_permissions=True)
@@ -415,7 +417,9 @@ def update_attendance_monthly(doc, method=None):
 			'attendance_daily': [{
 				'att_day': attendance['attendance_date'],
 				'work_hours': attendance['work_hours'],
-				'sign': sign
+				'sign': sign,
+				'shift': attendance['shift'],
+				'number_of_hours': attendance['number_of_hours']
 			}]
 		})
 		monthly_att_doc.insert(ignore_permissions=True)
