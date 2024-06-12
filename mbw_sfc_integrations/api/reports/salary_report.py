@@ -26,7 +26,7 @@ def salary_report(**body):
         if employee:
             filters.update({"department":department})
         fieldsget = ["name","employee","employee_name","department","designation","gross_pay","net_pay","grade"]
-        list_salary = frappe.db.get_list(doctype="Salary Slip",filters=filters,fields= fieldsget,start=(page_number-1)*page_size,page_length=page_size, pluck='name')
+        list_salary = frappe.db.get_list(doctype="Salary Slip",filters=filters,fields= fieldsget,start=(page_number-1)*page_size,page_length=page_size)
         total = len(frappe.db.get_list(doctype="Salary Slip",filters=filters,pluck='name'))
         for salary in list_salary:
             doc_salary = frappe.get_doc("Salary Slip",salary.get("name")).as_dict()
@@ -34,10 +34,10 @@ def salary_report(**body):
             deductions = doc_salary.deductions
             if len(earnings) > 0 :
                 for earning in earnings:
-                    list_salary.update({earning.abbr: earning.year_to_date})
+                    salary.update({earning.abbr: earning.year_to_date})
             if len(deductions) > 0 :
                 for deduction in deductions:
-                    list_salary.update({deduction.abbr: deduction.year_to_date})
+                    salary.update({deduction.abbr: deduction.year_to_date})
         return gen_response(200,"",{
             "data": list_salary,
             "total":total
