@@ -6,6 +6,7 @@ from mbw_sfc_integrations.api.common import (gen_response,exception_handle)
 @frappe.whitelist(methods="GET")
 def salary_report(**body):
     try:
+        body= dict(body)
         month = int(validate_filter(type_check="require",value=body.get("month")))
         year = int(validate_filter(type_check="require",value=body.get("year")))
         department = body.get("department")
