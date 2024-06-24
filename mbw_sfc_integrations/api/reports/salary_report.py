@@ -58,7 +58,15 @@ def salary_report(**body):
             if len(deductions) > 0 :
                 for deduction in deductions:
                     salary.update({deduction.abbr: deduction.year_to_date})
-            tong_ngay_cong= salary.NCCG or 0 + salary.NCCT or 0 + salary.number_work_explain_absence_monthly or 0 + salary.number_of_holiday_monthly or 0 + salary.cong_bu or 0 + salary.NCCTL or 0 + salary.work_hours_broken_holidays_monthly or 0 
+            NCCG = salary.NCCG if salary.NCCG else 0
+            number_work_explain_absence_monthly = salary.number_work_explain_absence_monthly if salary.number_work_explain_absence_monthly else 0
+            number_of_holiday_monthly = salary.number_of_holiday_monthly if salary.number_of_holiday_monthly else 0
+            cong_bu = salary.cong_bu if salary.cong_bu else 0
+            work_hours_broken_holidays_monthly = salary.work_hours_broken_holidays_monthly if salary.work_hours_broken_holidays_monthly else 0
+            NCCTL = salary.NCCTL if salary.NCCTL else 0
+            NCCGL = salary.NCCGL if salary.NCCGL else 0
+            
+            tong_ngay_cong=  NCCG + number_work_explain_absence_monthly + number_of_holiday_monthly + cong_bu + work_hours_broken_holidays_monthly + NCCTL + NCCGL
             salary.update({"tong_cong":tong_ngay_cong})
         return gen_response(200,"",{
             "data": list_salary,
