@@ -69,7 +69,8 @@ def update_attendance(payload, request_id=None):
 					setattr(attendance_name, field, value)
 			attendance_name.save()
 		else:
-			frappe.throw(("Attendance không tồn tại!"))
+			# Nếu không tồn tại, tạo mới Attendance
+			create_attendance(payload, request_id=request_id)
 
 	except Exception as e:
 		create_sfc_log(status="Error", exception=e, rollback=True)
