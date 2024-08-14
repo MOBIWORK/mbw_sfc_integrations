@@ -112,11 +112,11 @@ def get_attendance(**kwargs):
 		return exception_handel(e)
 
 
-def list_attendance(employee, start_date, end_date):
+def list_attendance(employee_name, start_date, end_date):
         list_attendances = frappe.get_all(
             'Attendance',
             filters={"attendance_date": ("between", [start_date, end_date]), 
-                     "employee": employee, 
+                     "employee_name": employee_name, 
 					 "docstatus": 1
                 	},
             fields=['*']
@@ -128,27 +128,22 @@ def update_attendance_monthly(doc, method=None):
 	# Lấy ngày tháng để truy xuất dữ liệu
 	cr_date = doc.attendance_date
 	if isinstance(cr_date, str):
-		try:
-			create_date = datetime.strptime(cr_date, '%Y-%m-%d %H:%M:%S')
-		except ValueError:
-			create_date = datetime.strptime(cr_date, '%Y-%m-%d')
+		create_date = datetime.strptime(cr_date, '%Y-%m-%d')
 	else:
 		create_date = cr_date
 	month = int(create_date.month)
 	year = int(create_date.year)
+
 	start_date_str = f'{year:04d}-{month:02d}-01'
 	last_day_of_month = calendar.monthrange(year, month)[1]
 	end_date_str = f'{year:04d}-{month:02d}-{last_day_of_month:02d}'
 	start_date = getdate(start_date_str)
 	end_date = getdate(end_date_str)
-	attendance = doc.as_dict()
-	list_attendances = list_attendance(employee=attendance["employee"], start_date=start_date, end_date=end_date)
 
-	exist_monthly_att = frappe.get_value(
-            "SFC Attendance Monthly Report",
-            {"month": month, "year": year, "employee": attendance["employee"]},
-            "name",
-        )
+	attendance = doc.as_dict()
+	list_attendances = list_attendance(employee_name=doc.employee_name, start_date=start_date, end_date=end_date)
+
+	exist_monthly_att = frappe.get_value("SFC Attendance Monthly Report", {"month": month, "year": year, "employee_name": doc.employee_name}, "name")
 	
 	if exist_monthly_att:
 		frappe.delete_doc('SFC Attendance Monthly Report', exist_monthly_att)
