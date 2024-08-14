@@ -147,7 +147,7 @@ def update_attendance_monthly(doc, method=None):
 	
 	if exist_monthly_att:
 		for i in exist_monthly_att:
-			frappe.delete_doc('SFC Attendance Monthly Report', i)
+			frappe.delete_doc("SFC Attendance Monthly Report", i["name"])
 		monthly_att_doc = frappe.new_doc('SFC Attendance Monthly Report')
 		monthly_att_doc.year = year
 		monthly_att_doc.month = month
