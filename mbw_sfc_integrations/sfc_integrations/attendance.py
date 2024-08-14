@@ -143,10 +143,11 @@ def update_attendance_monthly(doc, method=None):
 	attendance = doc.as_dict()
 	list_attendances = list_attendance(employee_name=doc.employee_name, start_date=start_date, end_date=end_date)
 
-	exist_monthly_att = frappe.get_value("SFC Attendance Monthly Report", {"month": month, "year": year, "employee_name": doc.employee_name}, "name")
+	exist_monthly_att = frappe.get_all("SFC Attendance Monthly Report", filters={"month": month, "year": year, "employee_name": doc.employee_name}, fields=["name"])
 	
 	if exist_monthly_att:
-		frappe.delete_doc('SFC Attendance Monthly Report', exist_monthly_att)
+		for i in exist_monthly_att:
+			frappe.delete_doc('SFC Attendance Monthly Report', i)
 		monthly_att_doc = frappe.new_doc('SFC Attendance Monthly Report')
 		monthly_att_doc.year = year
 		monthly_att_doc.month = month
