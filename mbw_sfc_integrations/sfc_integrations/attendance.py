@@ -129,7 +129,6 @@ def update_attendance_monthly(doc, method=None):
 	# Lấy ngày tháng để truy xuất dữ liệu
 	cr_date = doc.attendance_date
 	if isinstance(cr_date, str):
-		create_date = datetime.strptime(cr_date, '%Y-%m-%d')
 		try:
 			create_date = datetime.strptime(cr_date, '%Y-%m-%d %H:%M:%S')
 		except ValueError:
